@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-MessageHandler.History-7d9b6101-35d8-46df-ac18-7480d6bbac77</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.15" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure.Messaging.Kafka\Infrastructure.Messaging.Kafka.csproj" />
+    <ProjectReference Include="..\SharedKernel\Infrastructure.Shared.Messaging.csproj" />
+  </ItemGroup>
+</Project>

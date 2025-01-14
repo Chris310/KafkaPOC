@@ -46,6 +46,14 @@ namespace Infrastructure.Messaging.Kafka
                 BootstrapServers = _config.BootstrapServers
             };
 
+            if (!string.IsNullOrEmpty(_config.SaslUsername))
+            {
+                producerConfig.SaslUsername = _config.SaslUsername;
+                producerConfig.SaslPassword = _config.SaslPassword;
+                producerConfig.SecurityProtocol = Enum.Parse<SecurityProtocol>(_config.SecurityProtocol, true);
+                producerConfig.SaslMechanism = Enum.Parse<SaslMechanism>(_config.SaslMechanism, true);
+            }
+
             // ==============================
             // APLICAR ProducerOptions GLOBALES (si existen)
             // ==============================
@@ -119,6 +127,14 @@ namespace Infrastructure.Messaging.Kafka
                 BootstrapServers = _config.BootstrapServers,
                 GroupId = groupId
             };
+
+            if (!string.IsNullOrEmpty(_config.SaslUsername))
+            {
+                consumerConfig.SaslUsername = _config.SaslUsername;
+                consumerConfig.SaslPassword = _config.SaslPassword;
+                consumerConfig.SecurityProtocol = Enum.Parse<SecurityProtocol>(_config.SecurityProtocol, true);
+                consumerConfig.SaslMechanism = Enum.Parse<SaslMechanism>(_config.SaslMechanism, true);
+            }
 
             // ==============================
             // APLICAR ConsumerOptions GLOBALES (si existen)

@@ -1,25 +1,26 @@
-﻿
-namespace SharedKernel.Configuration
+﻿namespace SharedKernel.Configuration
 {
     public class MessagingConfiguration
     {
         public string BootstrapServers { get; set; }
 
+        public string? SaslUsername { get; set; }
+        public string? SaslPassword { get; set; }
+        public string? SecurityProtocol { get; set; } // "SaslSsl", "Plaintext", etc.
+        public string? SaslMechanism { get; set; }    // "Plain", "ScramSha256", etc.
+
         public Dictionary<string, TopicConfiguration> Topics { get; set; } = new();
 
         public ProducerOptions ProducerOptions { get; set; } = new();
-
         public ConsumerOptions ConsumerOptions { get; set; } = new();
     }
 
     public class ProducerOptions
     {
-        public string Acks { get; set; } // "All", "None", "Leader"
+        public string? Acks { get; set; } // "All", "None", "Leader"
         public int? LingerMs { get; set; }
         public int? BatchNumMessages { get; set; }
         public int? MessageTimeoutMs { get; set; }
-        // Aquí se puede agregar lo que Confluent te permita configurar
-        // (SecurityProtocol, SslCaLocation, etc.)
     }
 
     public class ConsumerOptions
@@ -30,7 +31,6 @@ namespace SharedKernel.Configuration
         public string? AutoOffsetReset { get; set; }  // "Earliest", "Latest", "None"
     }
 
-    // Por cada topic, mantienes tus campos
     public class TopicConfiguration
     {
         public string Name { get; set; }
@@ -40,5 +40,4 @@ namespace SharedKernel.Configuration
         public int? FetchWaitMaxMs { get; set; }
         public bool? EnableAutoCommit { get; set; }
     }
-
 }

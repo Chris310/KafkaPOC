@@ -54,52 +54,6 @@ namespace Infrastructure.Messaging.Kafka
             }
         }
 
-        public IEnumerable<T> ConsumeBatch(int batchSize, TimeSpan timeout)
-        {
-            var messages = new List<T>();
-            var startTime = DateTime.UtcNow;
-
-            try
-            {
-                while (messages.Count < batchSize && (DateTime.UtcNow - startTime) < timeout)
-                {
-                    try
-                    {
-                        var consumeResult = _consumer.Consume(timeout);
-
-                        if (consumeResult != null)
-                        {
-                            var deserializedMessage = _serializer.Deserialize<T>(consumeResult.Message.Value);
-                            messages.Add(deserializedMessage);
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                    catch (ConsumeException ex)
-                    {
-                        _logger.LogError(ex, "Failed to consume a message from topic '{Topic}': {Reason}", ex.ConsumerRecord?.Topic, ex.Error.Reason);
-                        throw;
-                    }
-                    catch (JsonException ex)
-                    {
-                        _logger.LogError(ex, "Failed to deserialize a message.");
-                        throw;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An unexpected error occurred while consuming a batch of messages.");
-                throw;
-            }
-
-            _logger.LogInformation("Successfully consumed {Count} messages in batch from topic '{Topic}'.", messages.Count, _consumer.Subscription.FirstOrDefault());
-
-            return messages;
-        }
-
         public void Commit()
         {
             try

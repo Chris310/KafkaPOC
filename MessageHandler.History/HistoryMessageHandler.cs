@@ -3,20 +3,16 @@ using SharedKernel.Messaging;
 
 namespace MessageHandler.History
 {
-    public class HistoryMessageHandler : IMessageHandler<HistoryMessageDTO>
+    public class HistoryMessageHandler : IBatchMessageHandler<HistoryMessageDTO>
     {
-        /// <summary>
-        /// Procesa el mensaje recibido.
-        /// </summary>
-        /// <param name="message">El mensaje de tipo HistoryMessageDTO.</param>
-        /// <returns>Una tarea asincrónica.</returns>
-        public async Task HandleMessageAsync(HistoryMessageDTO message)
+        public async Task HandleBatchAsync(IEnumerable<HistoryMessageDTO> messages)
         {
-            // Simulación de procesamiento (por ejemplo, guardar en base de datos)
-            await Task.Run(() =>
+            foreach (var msg in messages)
             {
-                Console.WriteLine($"Processing message: Data={message.Data}, Timestamp={message.Timestamp}");
-            });
+                Console.WriteLine($"Processing message in batch: Data={msg.Data}, Timestamp={msg.Timestamp}");
+            }
+
+            await Task.Delay(100); //simulo procesar, aca hacer tema de bulk insert en BD
         }
     }
 }

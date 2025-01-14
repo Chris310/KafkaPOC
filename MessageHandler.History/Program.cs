@@ -20,7 +20,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<IMessageBusFactory, KafkaFactory>();
 
         // Registrar el handler de mensajes
-        services.AddSingleton<IMessageHandler<HistoryMessageDTO>, HistoryMessageHandler>();
+        services.AddSingleton<IBatchMessageHandler<HistoryMessageDTO>, HistoryMessageHandler>();
 
         // Registrar un consumidor genérico para el tópico "History"
         services.AddSingleton<IMessageConsumer<HistoryMessageDTO>>(sp =>

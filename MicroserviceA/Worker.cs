@@ -22,14 +22,14 @@ public class Worker : BackgroundService
             {
                 HistoryMessageDTO message = new HistoryMessageDTO();
                 message.Timestamp = DateTime.Now;
-                message.Data = $"Test Message!! {Guid.NewGuid()}";
+                message.Data1 = $"Test Message!! {Guid.NewGuid()}";
 
                 await _producer.PublishAsync(message);
 
-                _logger.LogInformation($"Message sent to topic: History. {message.Data}, {message.Timestamp.ToString()}");
-                Console.WriteLine($"Message sent to topic: History. {message.Data}, {message.Timestamp.ToString()}");
+                _logger.LogInformation($"Message sent to topic: History. {message.Data1}, {message.Timestamp.ToString()}");
+                Console.WriteLine($"Message sent to topic: History. {message.Data1}, {message.Timestamp.ToString()}");
 
-                await Task.Delay(2000, stoppingToken);
+                await Task.Delay(500, stoppingToken);
             }
             catch (OperationCanceledException)
             {

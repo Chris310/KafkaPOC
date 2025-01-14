@@ -7,9 +7,8 @@
         /// </summary>
         public DateTime Timestamp { get; set; }
 
-        /// <summary>
-        /// Data associated with the historical message.
-        /// </summary>
-        public string Data { get; set; }
+        public string? Data1 { get; set; }
+        public string? Data2 { get; set; }
+        public string? Data3 { get; set; }
     }
 }

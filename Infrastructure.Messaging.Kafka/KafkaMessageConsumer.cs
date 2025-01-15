@@ -28,6 +28,39 @@ namespace Infrastructure.Messaging.Kafka
             _logger.LogInformation("Kafka consumer created for topic: {Topic}", _topic);
         }
 
+        public T Consume(TimeSpan timeout)
+        {
+            try
+            {
+                var consumeResult = _consumer.Consume(timeout);
+
+                if (consumeResult == null)
+                {
+                    _logger.LogWarning("No message was consumed from topic '{Topic}' within the timeout period.", _topic);
+                    return default;
+                }
+
+                _logger.LogInformation("Message consumed from topic '{Topic}': {Message}", _topic, consumeResult.Message.Value);
+
+                return _serializer.Deserialize<T>(consumeResult.Message.Value);
+            }
+            catch (ConsumeException ex)
+            {
+                _logger.LogError(ex, "Failed to consume message from topic '{Topic}'. Reason: {Reason}", _topic, ex.Error.Reason);
+                throw;
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "Failed to deserialize message from topic '{Topic}'.", _topic);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while consuming a message from topic '{Topic}'.", _topic);
+                throw;
+            }
+        }
+
         public T Consume()
         {
             try

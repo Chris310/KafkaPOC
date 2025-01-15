@@ -9,6 +9,7 @@ namespace MessageHandler.History
         private readonly IMessageConsumer<HistoryMessageDTO> _consumer;
         private readonly IBatchMessageHandler<HistoryMessageDTO> _handler;
         private readonly int _batchSize;
+        private readonly TimeSpan _consumeTimeout;
 
         public Worker(ILogger<Worker> logger, IMessageConsumer<HistoryMessageDTO> consumer, IBatchMessageHandler<HistoryMessageDTO> handler, IConfiguration configuration)
         {
@@ -17,6 +18,9 @@ namespace MessageHandler.History
             _handler = handler ?? throw new ArgumentNullException(nameof(handler));
 
             _batchSize = configuration.GetValue<int>("BatchProcessing:BatchSize");
+
+            var timeoutMs = configuration.GetValue<int?>("ConsumerOptions:ConsumeTimeoutMs") ?? 1000;
+            _consumeTimeout = TimeSpan.FromMilliseconds(timeoutMs);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -31,7 +35,7 @@ namespace MessageHandler.History
 
                     for (int i = 0; i < _batchSize; i++)
                     {
-                        var message = _consumer.Consume();
+                        var message = _consumer.Consume(_consumeTimeout);
                         if (message == null)
                         {
                             // Significa que no hay más mensajes disponibles en este momento

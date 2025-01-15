@@ -6,37 +6,28 @@ using System.Text.Json;
 
 namespace Infrastructure.Messaging.Kafka
 {
-    public class KafkaMessageProducer<T> : IMessageProducer<T>, IDisposable
+    public class KafkaMessageProducer<T> : IMessageProducer<T>, IDisposable where T : class
     {
         private readonly ILogger<IMessageProducer<T>> _logger;
-        private readonly IMessageSerializer _serializer;
-        private readonly IProducer<string, string> _producer;
+        private readonly IProducer<string, T> _producer;
         private readonly string _topic;
 
-        public KafkaMessageProducer(ILogger<IMessageProducer<T>> logger, IMessageSerializer serializer, ProducerConfig config, string topic)
+        public KafkaMessageProducer(ILogger<IMessageProducer<T>> logger, IProducer<string, T> producer, string topic)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            _producer = producer ?? throw new ArgumentNullException(nameof(producer));
             _topic = topic ?? throw new ArgumentNullException(nameof(topic));
-
-            if (config == null)
-                throw new ArgumentNullException(nameof(config));
-
-            _producer = new ProducerBuilder<string, string>(config).Build();
         }
 
         public async Task PublishAsync(T message, string key = null)
         {
-            var jsonMessage = _serializer.Serialize(message);
-
             try
             {
                 // Enviar el mensaje a Kafka
-                await _producer.ProduceAsync(_topic, new Message<string, string>
-                {
-                    Key = key,
-                    Value = jsonMessage
-                });
+                var result = await _producer.ProduceAsync(
+                    _topic,
+                    new Message<string, T> { Key = key, Value = message }
+                );
 
                 _logger.LogInformation("Message delivered to topic '{Topic}' successfully.", _topic);
             }
@@ -63,6 +54,7 @@ namespace Infrastructure.Messaging.Kafka
             }
             finally
             {
+                _producer.Flush(TimeSpan.FromSeconds(5));
                 _producer.Dispose();
                 _logger.LogInformation("Kafka producer for topic '{Topic}' disposed successfully.", _topic);
             }

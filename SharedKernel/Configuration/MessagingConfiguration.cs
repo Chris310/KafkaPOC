@@ -9,10 +9,19 @@
         public string? SecurityProtocol { get; set; } // "SaslSsl", "Plaintext", etc.
         public string? SaslMechanism { get; set; }    // "Plain", "ScramSha256", etc.
 
+        public SchemaRegistryConfiguration SchemaRegistry { get; set; } = new();
+
         public Dictionary<string, TopicConfiguration> Topics { get; set; } = new();
 
         public ProducerOptions ProducerOptions { get; set; } = new();
         public ConsumerOptions ConsumerOptions { get; set; } = new();
+    }
+
+    public class SchemaRegistryConfiguration
+    {
+        public string Url { get; set; }
+        public string ApiKey { get; set; }
+        public string ApiSecret { get; set; }
     }
 
     public class ProducerOptions

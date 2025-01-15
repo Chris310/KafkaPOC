@@ -1,10 +1,10 @@
 ﻿
 namespace SharedKernel.Messaging
 {
-    public interface IMessageConsumer<T> : IDisposable
+    public interface IMessageConsumer<T> : IDisposable where T : class
     {
-        T Consume();
-        T Consume(TimeSpan timeout);
+        T? Consume();
+        T? Consume(TimeSpan timeout);
         void Commit();
     }
 }

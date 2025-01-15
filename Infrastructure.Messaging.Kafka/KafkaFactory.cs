@@ -1,5 +1,8 @@
 ﻿using Confluent.Kafka;
 using Confluent.Kafka.Admin;
+using Confluent.Kafka.SyncOverAsync;
+using Confluent.SchemaRegistry;
+using Confluent.SchemaRegistry.Serdes;
 using Infrastructure.Messaging.Kafka.Serialization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -12,16 +15,24 @@ namespace Infrastructure.Messaging.Kafka
     {
         private readonly MessagingConfiguration _config;
         private readonly ILogger<KafkaFactory> _logger;
-        private readonly IMessageSerializer _serializer;
+        private readonly ISchemaRegistryClient _schemaRegistryClient;
 
-        public KafkaFactory(IOptions<MessagingConfiguration> config, ILogger<KafkaFactory> logger, IMessageSerializer serializer)
+        public KafkaFactory(IOptions<MessagingConfiguration> config, ILogger<KafkaFactory> logger)
         {
             _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
-            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            var schemaRegistryConfig = new SchemaRegistryConfig
+            {
+                Url = _config.SchemaRegistry.Url,
+                BasicAuthCredentialsSource = AuthCredentialsSource.UserInfo,
+                BasicAuthUserInfo = $"{_config.SchemaRegistry.ApiKey}:{_config.SchemaRegistry.ApiSecret}"
+            };
+
+            _schemaRegistryClient = new CachedSchemaRegistryClient(schemaRegistryConfig);
         }
 
-        public IMessageProducer<T> CreateProducer<T>(string topicName, ILogger<IMessageProducer<T>> logger)
+        public IMessageProducer<T> CreateProducer<T>(string topicName, ILogger<IMessageProducer<T>> logger) where T : class
         {
             if (!_config.Topics.ContainsKey(topicName))
             {
@@ -41,6 +52,8 @@ namespace Infrastructure.Messaging.Kafka
             //}
 
             // Configuración base del Producer
+            var topicConfig = _config.Topics[topicName];
+
             var producerConfig = new ProducerConfig
             {
                 BootstrapServers = _config.BootstrapServers
@@ -53,6 +66,12 @@ namespace Infrastructure.Messaging.Kafka
                 producerConfig.SecurityProtocol = Enum.Parse<SecurityProtocol>(_config.SecurityProtocol, true);
                 producerConfig.SaslMechanism = Enum.Parse<SaslMechanism>(_config.SaslMechanism, true);
             }
+
+            var jsonSerializerConfig = new JsonSerializerConfig
+            {
+                AutoRegisterSchemas = true,
+                SubjectNameStrategy = SubjectNameStrategy.Topic // Se puede personalizar si se necesita un esquema específico
+            };
 
             // ==============================
             // APLICAR ProducerOptions GLOBALES (si existen)
@@ -91,9 +110,16 @@ namespace Infrastructure.Messaging.Kafka
 
             logger.LogInformation("Creating producer for topic '{TopicName}' -> actual topic '{Actual}'.", topicName, topic);
 
+
+            var producerBuilder = new ProducerBuilder<string, T>(producerConfig)
+                .SetValueSerializer(new JsonSerializer<T>(_schemaRegistryClient, jsonSerializerConfig))
+                .SetKeySerializer(Serializers.Utf8);
+
             try
             {
-                return new KafkaMessageProducer<T>(logger, _serializer, producerConfig, topic);
+                var producer = producerBuilder.Build();
+
+                return new KafkaMessageProducer<T>(logger, producer, topicConfig.Name);
             }
             catch (Exception ex)
             {
@@ -102,7 +128,7 @@ namespace Infrastructure.Messaging.Kafka
             }
         }
 
-        public IMessageConsumer<T> CreateConsumer<T>(string topicName, string groupId, ILogger<IMessageConsumer<T>> logger)
+        public IMessageConsumer<T> CreateConsumer<T>(string topicName, string groupId, ILogger<IMessageConsumer<T>> logger) where T : class
         {
             if (!_config.Topics.ContainsKey(topicName))
             {
@@ -135,6 +161,8 @@ namespace Infrastructure.Messaging.Kafka
                 consumerConfig.SecurityProtocol = Enum.Parse<SecurityProtocol>(_config.SecurityProtocol, true);
                 consumerConfig.SaslMechanism = Enum.Parse<SaslMechanism>(_config.SaslMechanism, true);
             }
+
+            var jsonDeserializer = new JsonDeserializer<T>().AsSyncOverAsync();
 
             // ==============================
             // APLICAR ConsumerOptions GLOBALES (si existen)
@@ -187,9 +215,16 @@ namespace Infrastructure.Messaging.Kafka
 
             logger.LogInformation("Creating consumer for topic '{TopicName}' (actual topic '{ActualTopic}') with Group ID '{GroupId}'.", topicName, topic, groupId);
 
+
+            var consumerBuilder = new ConsumerBuilder<string, T>(consumerConfig)
+                .SetValueDeserializer(jsonDeserializer)
+                .SetKeyDeserializer(Deserializers.Utf8);
+
+            var consumer = consumerBuilder.Build();
+
             try
             {
-                return new KafkaMessageConsumer<T>(logger, _serializer, consumerConfig, topic);
+                return new KafkaMessageConsumer<T>(logger, consumer, topicConfig.Name);
             }
             catch (Exception ex)
             {

@@ -1,5 +1,6 @@
 using Infrastructure.Shared.Messaging.DTO;
 using SharedKernel.Messaging;
+using System;
 
 public class Worker : BackgroundService
 {
@@ -16,6 +17,8 @@ public class Worker : BackgroundService
     {
         _logger.LogInformation("Worker started, sending messages to topic: History.");
 
+        Random random = new Random();
+
         while (!stoppingToken.IsCancellationRequested)
         {
             try
@@ -24,11 +27,13 @@ public class Worker : BackgroundService
                 message.Fecha = DateTime.Now;
                 message.InfoPublica = $"Test Data1 {Guid.NewGuid()}";
                 message.InfoPrivada = "Test Data2";
+                message.InfoSolicitud = random.Next(0, 5) == 0 ? null : $"Test InfoSolicitud {Guid.NewGuid()}";
+                message.InfoRespuesta = "InfoRespuestaaaaaaaaaa";
 
                 await _producer.PublishAsync(message);
 
-                _logger.LogInformation($"Message sent to topic: History. {message.InfoPublica}, {message.Fecha.ToString()}");
-                Console.WriteLine($"Message sent to topic: History. {message.InfoPublica}, {message.Fecha.ToString()}");
+                _logger.LogInformation($"Message sent to topic: History. {message.InfoPublica}, {message.Fecha.ToString()},   {message.InfoSolicitud ?? "N/A"}");
+                Console.WriteLine($"Message sent to topic: History. {message.InfoPublica}, {message.Fecha.ToString()},    {message.InfoSolicitud ?? "N/A"}");
 
                 await Task.Delay(500, stoppingToken);
             }

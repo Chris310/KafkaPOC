@@ -30,15 +30,15 @@ namespace Infrastructure.Messaging.Kafka
             }
 
             // Aseguramos que el topic exista (si no existe, se crea)
-            try
-            {
-                EnsureTopicExistsAsync(topicName).GetAwaiter().GetResult();
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Failed to ensure topic '{TopicName}' exists.", topicName);
-                throw;
-            }
+            //try
+            //{
+            //    EnsureTopicExistsAsync(topicName).GetAwaiter().GetResult();
+            //}
+            //catch (Exception ex)
+            //{
+            //    logger.LogError(ex, "Failed to ensure topic '{TopicName}' exists.", topicName);
+            //    throw;
+            //}
 
             // Configuración base del Producer
             var producerConfig = new ProducerConfig
@@ -198,62 +198,62 @@ namespace Infrastructure.Messaging.Kafka
             }
         }
 
-        public async Task EnsureTopicExistsAsync(string topicName)
-        {
-            if (!_config.Topics.TryGetValue(topicName, out var topicConfig))
-            {
-                throw new ArgumentException($"Topic {topicName} is not configured.");
-            }
+        //public async Task EnsureTopicExistsAsync(string topicName)
+        //{
+        //    if (!_config.Topics.TryGetValue(topicName, out var topicConfig))
+        //    {
+        //        throw new ArgumentException($"Topic {topicName} is not configured.");
+        //    }
 
-            try
-            {
-                using var adminClient = new AdminClientBuilder(new AdminClientConfig
-                {
-                    BootstrapServers = _config.BootstrapServers
-                }).Build();
+        //    try
+        //    {
+        //        using var adminClient = new AdminClientBuilder(new AdminClientConfig
+        //        {
+        //            BootstrapServers = _config.BootstrapServers
+        //        }).Build();
 
-                var metadata = adminClient.GetMetadata(TimeSpan.FromSeconds(10));
-                var existingTopics = metadata.Topics.Select(t => t.Topic).ToHashSet();
+        //        var metadata = adminClient.GetMetadata(TimeSpan.FromSeconds(10));
+        //        var existingTopics = metadata.Topics.Select(t => t.Topic).ToHashSet();
 
-                if (existingTopics.Contains(topicConfig.Name))
-                {
-                    _logger.LogInformation("Topic '{TopicName}' already exists.", topicConfig.Name);
-                    return;
-                }
+        //        if (existingTopics.Contains(topicConfig.Name))
+        //        {
+        //            _logger.LogInformation("Topic '{TopicName}' already exists.", topicConfig.Name);
+        //            return;
+        //        }
 
-                var topicSpecification = new TopicSpecification
-                {
-                    Name = topicConfig.Name,
-                    NumPartitions = topicConfig.Partitions,
-                    ReplicationFactor = topicConfig.ReplicationFactor
-                };
+        //        var topicSpecification = new TopicSpecification
+        //        {
+        //            Name = topicConfig.Name,
+        //            NumPartitions = topicConfig.Partitions,
+        //            ReplicationFactor = topicConfig.ReplicationFactor
+        //        };
 
-                _logger.LogInformation("Creating topic '{TopicName}' with {Partitions} partitions and replication factor {ReplicationFactor}.", topicConfig.Name, topicConfig.Partitions, topicConfig.ReplicationFactor);
+        //        _logger.LogInformation("Creating topic '{TopicName}' with {Partitions} partitions and replication factor {ReplicationFactor}.", topicConfig.Name, topicConfig.Partitions, topicConfig.ReplicationFactor);
 
-                await adminClient.CreateTopicsAsync(new List<TopicSpecification> { topicSpecification });
+        //        await adminClient.CreateTopicsAsync(new List<TopicSpecification> { topicSpecification });
 
-                _logger.LogInformation("Topic '{TopicName}' created successfully.", topicConfig.Name);
-            }
-            catch (CreateTopicsException ex)
-            {
-                foreach (var result in ex.Results)
-                {
-                    if (result.Error.Code == ErrorCode.TopicAlreadyExists)
-                    {
-                        _logger.LogWarning("Topic '{TopicName}' already exists (detected in exception).", result.Topic);
-                    }
-                    else
-                    {
-                        _logger.LogError("Error creating topic '{TopicName}': {Reason}", result.Topic, result.Error.Reason);
-                        throw;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while ensuring topic '{TopicName}' exists.", topicName);
-                throw;
-            }
-        }
+        //        _logger.LogInformation("Topic '{TopicName}' created successfully.", topicConfig.Name);
+        //    }
+        //    catch (CreateTopicsException ex)
+        //    {
+        //        foreach (var result in ex.Results)
+        //        {
+        //            if (result.Error.Code == ErrorCode.TopicAlreadyExists)
+        //            {
+        //                _logger.LogWarning("Topic '{TopicName}' already exists (detected in exception).", result.Topic);
+        //            }
+        //            else
+        //            {
+        //                _logger.LogError("Error creating topic '{TopicName}': {Reason}", result.Topic, result.Error.Reason);
+        //                throw;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "An error occurred while ensuring topic '{TopicName}' exists.", topicName);
+        //        throw;
+        //    }
+        //}
     }
 }

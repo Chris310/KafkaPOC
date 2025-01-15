@@ -22,7 +22,9 @@ public class Worker : BackgroundService
             {
                 HistoryMessageDTO message = new HistoryMessageDTO();
                 message.Timestamp = DateTime.Now;
-                message.Data1 = $"Test Message!! {Guid.NewGuid()}";
+                message.Data1 = $"Test Data1 {Guid.NewGuid()}";
+                message.Data2 = "Test Data2";
+                message.Data3 = "Test Data3";
 
                 await _producer.PublishAsync(message);
 

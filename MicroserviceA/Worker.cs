@@ -21,15 +21,14 @@ public class Worker : BackgroundService
             try
             {
                 HistoryMessageDTO message = new HistoryMessageDTO();
-                message.Timestamp = DateTime.Now;
-                message.Data1 = $"Test Data1 {Guid.NewGuid()}";
-                message.Data2 = "Test Data2";
-                message.Data3 = "Test Data3";
+                message.Fecha = DateTime.Now;
+                message.InfoPublica = $"Test Data1 {Guid.NewGuid()}";
+                message.InfoPrivada = "Test Data2";
 
                 await _producer.PublishAsync(message);
 
-                _logger.LogInformation($"Message sent to topic: History. {message.Data1}, {message.Timestamp.ToString()}");
-                Console.WriteLine($"Message sent to topic: History. {message.Data1}, {message.Timestamp.ToString()}");
+                _logger.LogInformation($"Message sent to topic: History. {message.InfoPublica}, {message.Fecha.ToString()}");
+                Console.WriteLine($"Message sent to topic: History. {message.InfoPublica}, {message.Fecha.ToString()}");
 
                 await Task.Delay(500, stoppingToken);
             }

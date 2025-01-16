@@ -19,7 +19,7 @@ namespace Infrastructure.Messaging.Kafka
             _topic = topic ?? throw new ArgumentNullException(nameof(topic));
         }
 
-        public async Task PublishAsync(T message, string key = null)
+        public async Task PublishAsync(T message, string? key = null)
         {
             try
             {

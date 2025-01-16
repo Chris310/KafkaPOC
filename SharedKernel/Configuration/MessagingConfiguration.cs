@@ -2,7 +2,7 @@
 {
     public class MessagingConfiguration
     {
-        public string BootstrapServers { get; set; }
+        public string? BootstrapServers { get; set; }
 
         public string? SaslUsername { get; set; }
         public string? SaslPassword { get; set; }
@@ -11,7 +11,7 @@
 
         public SchemaRegistryConfiguration SchemaRegistry { get; set; } = new();
 
-        public Dictionary<string, TopicConfiguration> Topics { get; set; } = new();
+        public Dictionary<string, TopicConfiguration> Topics { get; set; } = [];
 
         public ProducerOptions ProducerOptions { get; set; } = new();
         public ConsumerOptions ConsumerOptions { get; set; } = new();
@@ -19,9 +19,9 @@
 
     public class SchemaRegistryConfiguration
     {
-        public string Url { get; set; }
-        public string ApiKey { get; set; }
-        public string ApiSecret { get; set; }
+        public string? Url { get; set; }
+        public string? ApiKey { get; set; }
+        public string? ApiSecret { get; set; }
     }
 
     public class ProducerOptions
@@ -42,7 +42,7 @@
 
     public class TopicConfiguration
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public int Partitions { get; set; }
         public short ReplicationFactor { get; set; }
         public int? MaxPollRecords { get; set; }

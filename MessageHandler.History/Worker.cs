@@ -47,6 +47,8 @@ namespace MessageHandler.History
                     if (messages.Count > 0)
                     {
                         _logger.LogInformation("Received {Count} messages, processing batch...", messages.Count);
+                        Console.WriteLine("Received {Count} messages, processing batch...", messages.Count);
+
                         await _handler.HandleBatchAsync(messages);
                         
                          _consumer.Commit();

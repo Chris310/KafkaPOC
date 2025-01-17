@@ -172,8 +172,7 @@ namespace Infrastructure.Messaging.Kafka
             // AutoOffsetReset (Earliest, Latest, None)
             if (!string.IsNullOrEmpty(consumerOptions?.AutoOffsetReset))
             {
-                consumerConfig.AutoOffsetReset = Enum.Parse<AutoOffsetReset>(
-                    consumerOptions.AutoOffsetReset, ignoreCase: true);
+                consumerConfig.AutoOffsetReset = Enum.Parse<AutoOffsetReset>(consumerOptions.AutoOffsetReset, ignoreCase: true);
             }
 
             // EnableAutoCommit (global)
@@ -186,6 +185,16 @@ namespace Infrastructure.Messaging.Kafka
             if (consumerOptions?.FetchWaitMaxMs.HasValue ?? false)
             {
                 consumerConfig.FetchWaitMaxMs = consumerOptions.FetchWaitMaxMs.Value;
+            }
+
+            if (_config.ConsumerOptions.MaxPollIntervalMs.HasValue)
+            {
+                consumerConfig.MaxPollIntervalMs = _config.ConsumerOptions.MaxPollIntervalMs.Value;
+            }
+
+            if (_config.ConsumerOptions.FetchMinBytes.HasValue)
+            {
+                consumerConfig.FetchMinBytes = _config.ConsumerOptions.FetchMinBytes.Value;
             }
 
             // ==============================

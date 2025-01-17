@@ -39,7 +39,7 @@ namespace MessageHandler.History
                 {
                     try
                     {
-                        Console.WriteLine($"Proceso mensaje del topic History. {msg.InfoPublica} {msg.InfoPrivada}, {msg.Fecha.ToString()}");
+                        //Console.WriteLine($"Proceso mensaje del topic History. {msg.InfoPublica} {msg.InfoPrivada}, {msg.Fecha.ToString()}");
 
                         //using var cmd = new SqlCommand("NOMBREsp_DeInsertHistorialSession", conn)
                         //{

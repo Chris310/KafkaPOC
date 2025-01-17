@@ -1,3 +1,4 @@
+using Confluent.Kafka;
 using Infrastructure.Shared.Messaging.DTO;
 using SharedKernel.Messaging;
 
@@ -43,7 +44,7 @@ namespace MessageHandler.History
                         }
                         messages.Add(message);
                     }
-
+                    
                     if (messages.Count > 0)
                     {
                         _logger.LogInformation("Received {Count} messages, processing batch...", messages.Count);

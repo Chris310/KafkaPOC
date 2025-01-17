@@ -6,7 +6,7 @@ using System.Data;
 
 namespace MessageHandler.History
 {
-    public class HistoryMessageHandler : IBatchMessageHandler<HistoryMessageDTO>
+    public class HistoryMessageHandler : IBatchMessageHandler<HistoryMessageDTOv2>
     {
         private readonly ILogger<HistoryMessageHandler> _logger;
 
@@ -15,18 +15,19 @@ namespace MessageHandler.History
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task HandleBatchAsync(IEnumerable<HistoryMessageDTO> messages)
+        public async Task HandleBatchAsync(IEnumerable<HistoryMessageDTOv2> messages)
         {
-            _logger.LogInformation("Start processing {Count} messages in batch.", messages.Count());
+            _logger.LogInformation($"Mando a procesar {messages.Count().ToString()} mensajes.");
+            Console.WriteLine($"Mando a procesar {messages.Count().ToString()} mensajes.");
 
             await InsertHistoricoBatchAsync(messages);
 
-            _logger.LogInformation("Finished processing batch of {Count} messages.", messages.Count());
+            _logger.LogInformation("Terminó de procesar el batch.");
         }
 
-        public async Task InsertHistoricoBatchAsync(IEnumerable<HistoryMessageDTO> batch)
+        public async Task InsertHistoricoBatchAsync(IEnumerable<HistoryMessageDTOv2> batch)
         {
-            var connectionString = "PONERRRRRRconnectionString";
+            //var connectionString = "PONERRRRRRconnectionString";
 
             try
             {
@@ -35,11 +36,11 @@ namespace MessageHandler.History
 
                 // Hacemos un bucle para cada mensaje.
                 // (Para un "batch real" en un solo SP, usar Table-Valued Parameters, etc.)
-                foreach (var msg in batch)
+                foreach (var message in batch)
                 {
                     try
                     {
-                        //Console.WriteLine($"Proceso mensaje del topic History. {msg.InfoPublica} {msg.InfoPrivada}, {msg.Fecha.ToString()}");
+                        Console.WriteLine($"Proceso mensaje {message.Fecha.ToString()}, {message.InfoSolicitud ?? "N/A"}");
 
                         //using var cmd = new SqlCommand("NOMBREsp_DeInsertHistorialSession", conn)
                         //{
@@ -54,7 +55,7 @@ namespace MessageHandler.History
                         //await cmd.ExecuteNonQueryAsync();
 
                         _logger.LogInformation("Inserted message: InfoPublica={InfoPublica}, InfoPrivada={InfoPrivada}, Fecha={Fecha}",
-                            msg.InfoPublica, msg.InfoPrivada, msg.Fecha
+                            message.InfoPublica, message.InfoPrivada, message.Fecha
                         );
                     }
                     catch (Exception exMsg)
@@ -62,7 +63,7 @@ namespace MessageHandler.History
                         _logger.LogError(
                             exMsg,
                             "Error inserting message: InfoPublica={InfoPublica}, InfoPrivada={InfoPrivada}, Fecha={Fecha}",
-                            msg.InfoPublica, msg.InfoPrivada, msg.Fecha
+                            message.InfoPublica, message.InfoPrivada, message.Fecha
                         );
 
                         throw;
@@ -71,10 +72,7 @@ namespace MessageHandler.History
             }
             catch (Exception exConn)
             {
-                _logger.LogError(
-                    exConn,
-                    "Error opening SQL connection or executing stored procedure in InsertHistoricoBatchAsync."
-                );
+                _logger.LogError(exConn, "Error opening SQL connection or executing stored procedure in InsertHistoricoBatchAsync.");
                 throw;
             }
         }

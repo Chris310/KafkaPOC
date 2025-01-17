@@ -23,7 +23,6 @@ namespace Infrastructure.Messaging.Kafka
         {
             try
             {
-                // Enviar el mensaje a Kafka
                 var result = await _producer.ProduceAsync(
                     _topic,
                     new Message<string, T> { Key = key, Value = message }

@@ -1,12 +1,11 @@
 using Infrastructure.Shared.Messaging.DTO;
 using SharedKernel.Messaging;
-
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
-    private readonly IMessageProducer<HistoryMessageDTO> _producer;
+    private readonly IMessageProducer<HistoryMessageDTOv2> _producer;
 
-    public Worker(ILogger<Worker> logger, IMessageProducer<HistoryMessageDTO> producer)
+    public Worker(ILogger<Worker> logger, IMessageProducer<HistoryMessageDTOv2> producer)
     {
         _logger = logger;
         _producer = producer;
@@ -23,17 +22,17 @@ public class Worker : BackgroundService
         {
             try
             {
-                HistoryMessageDTO message = new HistoryMessageDTO();
+                HistoryMessageDTOv2 message = new HistoryMessageDTOv2();
                 message.Fecha = DateTime.Now;
                 message.InfoPublica = "Test Data1";
                 message.InfoPrivada = "Test Data2";
-                //message.InfoSolicitud = random.Next(0, 5) == 0 ? null : "Test InfoSolicitud";
-                //message.InfoRespuesta = "Valor InfoRespuesta";
+                message.InfoSolicitud = "Test InfoSolicitud";
+                message.InfoRespuesta = "Valor InfoRespuesta";
 
                 await _producer.PublishAsync(message);
 
-                _logger.LogInformation($"Mensaje enviado: {message.Fecha.ToString()}"); //, {message.InfoSolicitud ?? "N/A"}
-                Console.WriteLine($"Mensaje enviado: {message.Fecha.ToString()}");
+                _logger.LogInformation($"Mensaje enviado HistoryMessageDTOv2: {message.Fecha.ToString()}, ***** {message.InfoSolicitud}");
+                Console.WriteLine($"Mensaje enviado HistoryMessageDTOv2: {message.Fecha.ToString()}, ***** {message.InfoSolicitud}");
 
                 await Task.Delay(50, stoppingToken);
             }

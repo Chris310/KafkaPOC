@@ -70,7 +70,7 @@ namespace Infrastructure.Messaging.Kafka
             var jsonSerializerConfig = new JsonSerializerConfig
             {
                 AutoRegisterSchemas = true,
-                SubjectNameStrategy = SubjectNameStrategy.Topic // Se puede personalizar si se necesita un esquema específico
+                SubjectNameStrategy = SubjectNameStrategy.Topic
             };
 
             // ==============================
@@ -139,10 +139,6 @@ namespace Infrastructure.Messaging.Kafka
             var topicConfig = _config.Topics[topicName];
             var topic = topicConfig.Name;
 
-            // Configuración base del Consumer
-            // Si el método recibe 'groupId' por parámetro, lo respetamos (sobreescribe lo global).
-            // Si 'groupId' viniera vacío, podríamos usar el _config.ConsumerOptions.GroupId como fallback.
-            // (Esto depende de tu requerimiento; ajusta según prefieras.)
             if (string.IsNullOrEmpty(groupId) && !string.IsNullOrEmpty(_config.ConsumerOptions.GroupId))
             {
                 groupId = _config.ConsumerOptions.GroupId;
@@ -217,10 +213,6 @@ namespace Infrastructure.Messaging.Kafka
             {
                 consumerConfig.EnableAutoCommit = topicConfig.EnableAutoCommit.Value;
             }
-
-            // Forzar un AutoOffsetReset específico por tópico (si lo quisieras)
-            // if (!string.IsNullOrEmpty(topicConfig.AutoOffsetReset)) { ... } 
-            // (esto depende de que tengas esa propiedad en 'TopicConfiguration')
 
             logger.LogInformation("Creating consumer for topic '{TopicName}' (actual topic '{ActualTopic}') with Group ID '{GroupId}'.", topicName, topic, groupId);
 

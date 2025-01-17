@@ -1,4 +1,3 @@
-using Confluent.Kafka;
 using Infrastructure.Shared.Messaging.DTO;
 using SharedKernel.Messaging;
 
@@ -7,12 +6,12 @@ namespace MessageHandler.History
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private readonly IMessageConsumer<HistoryMessageDTO> _consumer;
-        private readonly IBatchMessageHandler<HistoryMessageDTO> _handler;
+        private readonly IMessageConsumer<HistoryMessageDTOv2> _consumer;
+        private readonly IBatchMessageHandler<HistoryMessageDTOv2> _handler;
         private readonly int _batchSize;
         private readonly TimeSpan _consumeTimeout;
 
-        public Worker(ILogger<Worker> logger, IMessageConsumer<HistoryMessageDTO> consumer, IBatchMessageHandler<HistoryMessageDTO> handler, IConfiguration configuration)
+        public Worker(ILogger<Worker> logger, IMessageConsumer<HistoryMessageDTOv2> consumer, IBatchMessageHandler<HistoryMessageDTOv2> handler, IConfiguration configuration)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _consumer = consumer ?? throw new ArgumentNullException(nameof(consumer));
@@ -26,29 +25,30 @@ namespace MessageHandler.History
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("MessageHandler.History Worker started.");
+            _logger.LogInformation("***** EMPEZANDO A RECIBIR MENSAJES *****");
+            Console.WriteLine("***** EMPEZANDO A RECIBIR MENSAJES *****");
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    var messages = new List<HistoryMessageDTO>();
+                    var messages = new List<HistoryMessageDTOv2>();
 
                     for (int i = 0; i < _batchSize; i++)
                     {
                         var message = _consumer.Consume(_consumeTimeout);
                         if (message == null)
                         {
-                            // Significa que no hay más mensajes disponibles en este momento
+                            Console.WriteLine("No hay mensajes en este momento");
                             break;
                         }
                         messages.Add(message);
                     }
-                    
+
                     if (messages.Count > 0)
                     {
-                        _logger.LogInformation("Received {Count} messages, processing batch...", messages.Count);
-                        Console.WriteLine("Received {Count} messages, processing batch...", messages.Count);
+                        _logger.LogInformation($"*** {messages.Count.ToString()} mensajes recibidos, llamo al handler para procesar batch. ***");
+                        Console.WriteLine($"*** {messages.Count.ToString()} mensajes recibidos, llamo al handler para procesar batch. ***");
 
                         await _handler.HandleBatchAsync(messages);
                         

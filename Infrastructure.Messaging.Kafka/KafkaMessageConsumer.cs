@@ -37,7 +37,7 @@ namespace Infrastructure.Messaging.Kafka
 
                 _logger.LogInformation($"Message received from Topic: {consumeResult.Topic}, Partition: {consumeResult.Partition.Value}, Offset: {consumeResult.Offset.Value}");
                 Console.WriteLine($"Message received from Topic: {consumeResult.Topic}, Partition: {consumeResult.Partition.Value}, Offset: {consumeResult.Offset.Value}");
-                
+
                 return consumeResult.Message.Value;
             }
             catch (ConsumeException ex)

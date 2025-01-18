@@ -1,4 +1,5 @@
 using Infrastructure.Shared.Messaging.DTO;
+using Polly;
 using SharedKernel.Messaging;
 
 namespace MessageHandler.History
@@ -10,6 +11,8 @@ namespace MessageHandler.History
         private readonly IBatchMessageHandler<HistoryMessageDTOv2> _handler;
         private readonly int _batchSize;
         private readonly TimeSpan _consumeTimeout;
+        private readonly int _maxRetryAttempts = 3; // Máximo número de intentos
+        private readonly int _retryDelayMs = 1000;  // Retraso entre intentos en ms
 
         public Worker(ILogger<Worker> logger, IMessageConsumer<HistoryMessageDTOv2> consumer, IBatchMessageHandler<HistoryMessageDTOv2> handler, IConfiguration configuration)
         {
@@ -50,9 +53,24 @@ namespace MessageHandler.History
                         _logger.LogInformation($"*** {messages.Count.ToString()} mensajes recibidos, llamo al handler para procesar batch. ***");
                         Console.WriteLine($"*** {messages.Count.ToString()} mensajes recibidos, llamo al handler para procesar batch. ***");
 
-                        await _handler.HandleBatchAsync(messages);
-                        
-                         _consumer.Commit();
+                        // Configurar la política de reintento
+                        var retryPolicy = Policy
+                            .Handle<Exception>() // Manejar cualquier excepción
+                            .WaitAndRetryAsync(
+                                _maxRetryAttempts,
+                                attempt => TimeSpan.FromMilliseconds(_retryDelayMs),
+                                (exception, timeSpan, attempt, context) =>
+                                {
+                                    _logger.LogWarning($"Attempt {attempt} failed with error: {exception.Message}. Retrying in {timeSpan.TotalMilliseconds}ms...");
+                                });
+
+                        // Ejecutar el procesamiento con política de reintento
+                        await retryPolicy.ExecuteAsync(async () =>
+                        {
+                            await _handler.HandleBatchAsync(messages);
+
+                            _consumer.Commit();
+                        });
                     }
                     else
                     {

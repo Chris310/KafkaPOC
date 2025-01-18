@@ -1,42 +1,31 @@
 ﻿using Xunit;
 using Moq;
 using Confluent.Kafka;
-using Confluent.SchemaRegistry;
-using Infrastructure.Messaging.Kafka;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using SharedKernel.Configuration;
+using Infrastructure.Messaging.Kafka;
 using Infrastructure.Shared.Messaging;
 
-public class ProducerTests
+namespace KafkaPOC.Tests.Producers
 {
-    [Fact]
-    public void CreateProducer_ShouldReturnValidProducer()
+    public class ProducerTests
     {
-        // Arrange
-        var mockLoggerFactory = new Mock<ILogger<KafkaFactory>>();
-        var mockLoggerProducer = new Mock<ILogger<IMessageProducer<string>>>();
-        var options = Options.Create(new MessagingConfiguration
+        [Fact]
+        public async Task PublishAsync_ShouldPublishMessage()
         {
-            BootstrapServers = "localhost:9092",
-            SchemaRegistry = new SchemaRegistryConfiguration
-            {
-                Url = "http://localhost:8081",
-                ApiKey = "test",
-                ApiSecret = "test"
-            },
-            Topics = new Dictionary<string, TopicConfiguration>
-            {
-                { "test-topic", new TopicConfiguration { Name = "test-topic" } }
-            }
-        });
+            // Arrange
+            var mockProducer = new Mock<IProducer<string, string>>();
+            var mockLogger = new Mock<ILogger<IMessageProducer<string>>>();
+            var producer = new KafkaMessageProducer<string>(mockLogger.Object, mockProducer.Object, "test-topic");
 
-        var factory = new KafkaFactory(options, mockLoggerFactory.Object);
+            // Act
+            await producer.PublishAsync("test-message");
 
-        // Act
-        var producer = factory.CreateProducer<string>("test-topic", mockLoggerProducer.Object);
-
-        // Assert
-        Assert.NotNull(producer);
+            // Assert
+            mockProducer.Verify(p => p.ProduceAsync(
+                "test-topic",
+                It.Is<Message<string, string>>(m => m != null && m.Value == "test-message"),
+                It.IsAny<CancellationToken>()),
+                Times.Once);
+        }
     }
 }

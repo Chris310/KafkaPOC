@@ -1,4 +1,4 @@
-﻿namespace SharedKernel.Messaging
+﻿namespace Infrastructure.Shared.Messaging
 {
     public interface IMessageProducer<T> : IDisposable where T : class
     {

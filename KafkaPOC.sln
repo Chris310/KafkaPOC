@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageHandler.History", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceB", "MicroserviceB\MicroserviceB.csproj", "{A3A91D8F-1C94-4380-B8CD-7EB25656E34E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaPOC.Tests", "KafkaPOC.Tests\KafkaPOC.Tests.csproj", "{F15B55B1-2875-4F2A-8CA1-53A891FEB19F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{A3A91D8F-1C94-4380-B8CD-7EB25656E34E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3A91D8F-1C94-4380-B8CD-7EB25656E34E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3A91D8F-1C94-4380-B8CD-7EB25656E34E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F15B55B1-2875-4F2A-8CA1-53A891FEB19F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F15B55B1-2875-4F2A-8CA1-53A891FEB19F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F15B55B1-2875-4F2A-8CA1-53A891FEB19F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F15B55B1-2875-4F2A-8CA1-53A891FEB19F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

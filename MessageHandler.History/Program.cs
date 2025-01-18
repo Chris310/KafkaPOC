@@ -1,6 +1,6 @@
 using Infrastructure.Messaging.Kafka;
 using SharedKernel.Configuration;
-using SharedKernel.Messaging;
+using Infrastructure.Shared.Messaging;
 using NLog.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MessageHandler.History;

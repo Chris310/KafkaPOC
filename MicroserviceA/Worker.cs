@@ -1,5 +1,5 @@
 using Infrastructure.Shared.Messaging.DTO;
-using SharedKernel.Messaging;
+using Infrastructure.Shared.Messaging;
 
 public class Worker : BackgroundService
 {

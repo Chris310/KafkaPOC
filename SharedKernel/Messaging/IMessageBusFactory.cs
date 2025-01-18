@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.Extensions.Logging;
 
-namespace SharedKernel.Messaging
+namespace Infrastructure.Shared.Messaging
 {
     public interface IMessageBusFactory
     {

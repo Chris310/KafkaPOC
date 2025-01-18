@@ -7,7 +7,7 @@ using Infrastructure.Messaging.Kafka.Serialization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SharedKernel.Configuration;
-using SharedKernel.Messaging;
+using Infrastructure.Shared.Messaging;
 
 namespace Infrastructure.Messaging.Kafka
 {

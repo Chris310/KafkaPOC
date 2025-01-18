@@ -1,7 +1,7 @@
 ﻿using Confluent.Kafka;
 using Infrastructure.Shared.Messaging.DTO;
 using Microsoft.Data.SqlClient;
-using SharedKernel.Messaging;
+using Infrastructure.Shared.Messaging;
 using System.Data;
 
 namespace MessageHandler.History

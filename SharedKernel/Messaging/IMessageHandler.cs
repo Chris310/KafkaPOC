@@ -1,5 +1,5 @@
 ﻿
-namespace SharedKernel.Messaging
+namespace Infrastructure.Shared.Messaging
 {
     public interface IMessageHandler<T>
     {

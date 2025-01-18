@@ -1,7 +1,7 @@
 ﻿using Confluent.Kafka;
 using Infrastructure.Messaging.Kafka.Serialization;
 using Microsoft.Extensions.Logging;
-using SharedKernel.Messaging;
+using Infrastructure.Shared.Messaging;
 using System.Text.Json;
 
 namespace Infrastructure.Messaging.Kafka
@@ -33,10 +33,12 @@ namespace Infrastructure.Messaging.Kafka
             catch (ProduceException<Null, string> ex)
             {
                 _logger.LogError(ex, "Failed to deliver message to topic '{Topic}'. Error: {Reason}", _topic, ex.Error.Reason);
+                throw;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An unexpected error occurred while delivering message to topic '{Topic}'.", _topic);
+                throw;
             }
         }
 

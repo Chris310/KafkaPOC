@@ -1,7 +1,7 @@
 using Confluent.Kafka;
 using Infrastructure.Shared.Messaging.DTO;
 using Polly;
-using SharedKernel.Messaging;
+using Infrastructure.Shared.Messaging;
 
 namespace MessageHandler.History
 {

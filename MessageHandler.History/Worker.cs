@@ -1,3 +1,4 @@
+using Confluent.Kafka;
 using Infrastructure.Shared.Messaging.DTO;
 using Polly;
 using SharedKernel.Messaging;
@@ -81,6 +82,9 @@ namespace MessageHandler.History
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "An error occurred while processing a batch of messages.");
+
+                    //*** Aca se puede manejar un mecanismo de Dead Letter Queue (DLQ), mandando los mensajes a otro topic ***
+                    //await _producer.PublishAsync(messages, "history-dlq-topic");
                 }
             }
         }

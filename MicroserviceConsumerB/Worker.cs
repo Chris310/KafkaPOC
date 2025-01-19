@@ -1,20 +1,21 @@
 using Infrastructure.Shared.Messaging.DTO;
 using Polly;
 using Infrastructure.Shared.Messaging;
+using Confluent.Kafka;
 
 namespace MicroserviceConsumerA
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private readonly IMessageConsumer<HistoryMessageDTOv2> _consumer;
-        private readonly IBatchMessageHandler<HistoryMessageDTOv2> _handler;
+        private readonly IMessageConsumer<HistoryMessageDTO> _consumer;
+        private readonly IMessageHandler<HistoryMessageDTO> _handler;
         private readonly int _batchSize;
         private readonly TimeSpan _consumeTimeout;
         private readonly int _maxRetryAttempts = 3; // Máximo número de intentos
         private readonly int _retryDelayMs = 1000;  // Retraso entre intentos en ms
 
-        public Worker(ILogger<Worker> logger, IMessageConsumer<HistoryMessageDTOv2> consumer, IBatchMessageHandler<HistoryMessageDTOv2> handler, IConfiguration configuration)
+        public Worker(ILogger<Worker> logger, IMessageConsumer<HistoryMessageDTO> consumer, IMessageHandler<HistoryMessageDTO> handler, IConfiguration configuration)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _consumer = consumer ?? throw new ArgumentNullException(nameof(consumer));
@@ -28,31 +29,21 @@ namespace MicroserviceConsumerA
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("***** MicroserviceConsumerA - EMPEZANDO A RECIBIR MENSAJES *****");
-            Console.WriteLine("***** MicroserviceConsumerA - EMPEZANDO A RECIBIR MENSAJES  *****");
+            _logger.LogInformation("***** MicroserviceConsumerB - EMPEZANDO A RECIBIR MENSAJES *****");
+            Console.WriteLine("***** MicroserviceConsumerB - EMPEZANDO A RECIBIR MENSAJES  *****");
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    var messages = new List<HistoryMessageDTOv2>();
+                    var message = _consumer.Consume(_consumeTimeout);
 
-                    for (int i = 0; i < _batchSize; i++)
+                    if (message == null)
                     {
-                        var message = _consumer.Consume(_consumeTimeout);
-                        if (message == null)
-                        {
-                            Console.WriteLine("No hay mensajes en este momento");
-                            break;
-                        }
-                        messages.Add(message);
+                        Console.WriteLine("No hay mensajes en este momento");
                     }
-
-                    if (messages.Count > 0)
+                    else 
                     {
-                        _logger.LogInformation($"*** {messages.Count.ToString()} mensajes recibidos, llamo al handler para procesar batch. ***");
-                        Console.WriteLine($"*** {messages.Count.ToString()} mensajes recibidos, llamo al handler para procesar batch. ***");
-
                         // Configurar la política de reintento
                         var retryPolicy = Policy
                             .Handle<Exception>() // Manejar cualquier excepción
@@ -67,16 +58,11 @@ namespace MicroserviceConsumerA
                         // Ejecutar el procesamiento con política de reintento
                         await retryPolicy.ExecuteAsync(async () =>
                         {
-                            await _handler.HandleBatchAsync(messages);
-
-                            _consumer.Commit();
+                            await _handler.HandleMessageAsync(message);
                         });
                     }
-                    else
-                    {
-                        // Si no hay mensajes, espero un poco antes de reintentar
-                        await Task.Delay(500, stoppingToken);
-                    }
+
+                    await Task.Delay(1000, stoppingToken);
                 }
                 catch (Exception ex)
                 {

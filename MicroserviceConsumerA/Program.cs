@@ -1,9 +1,9 @@
 using Infrastructure.Messaging.Kafka;
-using SharedKernel.Configuration;
+using Infrastructure.Shared.Messaging.Configuration;
 using Infrastructure.Shared.Messaging;
 using NLog.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MessageHandler.History;
+using MicroserviceConsumerA;
 using Infrastructure.Messaging.Kafka.Serialization;
 using Infrastructure.Shared.Messaging.DTO;
 

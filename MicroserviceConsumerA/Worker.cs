@@ -1,9 +1,8 @@
-using Confluent.Kafka;
 using Infrastructure.Shared.Messaging.DTO;
 using Polly;
 using Infrastructure.Shared.Messaging;
 
-namespace MessageHandler.History
+namespace MicroserviceConsumerA
 {
     public class Worker : BackgroundService
     {

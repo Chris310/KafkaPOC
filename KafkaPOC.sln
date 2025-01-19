@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Shared.Messaging", "SharedKernel\Infrastructure.Shared.Messaging.csproj", "{FA0BC326-0DA3-4ACA-9C51-F0C6233A4343}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Shared.Messaging", "Infrastructure.Shared.Messaging\Infrastructure.Shared.Messaging.csproj", "{FA0BC326-0DA3-4ACA-9C51-F0C6233A4343}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Messaging.Kafka", "Infrastructure.Messaging.Kafka\Infrastructure.Messaging.Kafka.csproj", "{18E85C31-B158-47CA-9025-79028FB704C5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceA", "MicroserviceA\MicroserviceA.csproj", "{9C883D2D-C669-437C-975F-372E11D13A42}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageHandler.History", "MessageHandler.History\MessageHandler.History.csproj", "{F2024BC4-65FB-4B5E-999E-986B2BC9FFC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroserviceConsumerA", "MicroserviceConsumerA\MicroserviceConsumerA.csproj", "{F2024BC4-65FB-4B5E-999E-986B2BC9FFC2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceB", "MicroserviceB\MicroserviceB.csproj", "{A3A91D8F-1C94-4380-B8CD-7EB25656E34E}"
 EndProject

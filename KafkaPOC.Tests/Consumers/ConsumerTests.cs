@@ -1,5 +1,4 @@
-﻿using Xunit;
-using Moq;
+﻿using Moq;
 using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
 using Infrastructure.Messaging.Kafka;

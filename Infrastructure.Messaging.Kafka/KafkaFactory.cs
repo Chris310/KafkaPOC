@@ -1,12 +1,10 @@
 ﻿using Confluent.Kafka;
-using Confluent.Kafka.Admin;
 using Confluent.Kafka.SyncOverAsync;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
-using Infrastructure.Messaging.Kafka.Serialization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SharedKernel.Configuration;
+using Infrastructure.Shared.Messaging.Configuration;
 using Infrastructure.Shared.Messaging;
 
 namespace Infrastructure.Messaging.Kafka

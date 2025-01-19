@@ -1,5 +1,5 @@
 using Infrastructure.Messaging.Kafka;
-using SharedKernel.Configuration;
+using Infrastructure.Shared.Messaging.Configuration;
 using NLog.Extensions.Logging;
 using Infrastructure.Shared.Messaging;
 using Infrastructure.Messaging.Kafka.Serialization;

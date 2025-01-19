@@ -1,7 +1,7 @@
 ﻿using Moq;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SharedKernel.Configuration;
+using Infrastructure.Shared.Messaging.Configuration;
 using Infrastructure.Messaging.Kafka;
 using Infrastructure.Shared.Messaging;
 

@@ -1,4 +1,4 @@
-﻿namespace SharedKernel.Configuration
+﻿namespace Infrastructure.Shared.Messaging.Configuration
 {
     /// <summary>
     /// Configuración principal de mensajería.

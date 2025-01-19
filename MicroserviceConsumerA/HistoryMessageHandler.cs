@@ -1,10 +1,9 @@
-﻿using Confluent.Kafka;
-using Infrastructure.Shared.Messaging.DTO;
+﻿using Infrastructure.Shared.Messaging.DTO;
 using Microsoft.Data.SqlClient;
 using Infrastructure.Shared.Messaging;
 using System.Data;
 
-namespace MessageHandler.History
+namespace MicroserviceConsumerA
 {
     public class HistoryMessageHandler : IBatchMessageHandler<HistoryMessageDTOv2>
     {

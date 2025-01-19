@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-MessageHandler.History-7d9b6101-35d8-46df-ac18-7480d6bbac77</UserSecretsId>
+    <UserSecretsId>dotnet-MicroserviceConsumerA-7d9b6101-35d8-46df-ac18-7480d6bbac77</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Infrastructure.Messaging.Kafka\Infrastructure.Messaging.Kafka.csproj" />
-    <ProjectReference Include="..\SharedKernel\Infrastructure.Shared.Messaging.csproj" />
+    <ProjectReference Include="..\Infrastructure.Shared.Messaging\Infrastructure.Shared.Messaging.csproj" />
   </ItemGroup>
 </Project>

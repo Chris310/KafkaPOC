@@ -30,10 +30,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Infrastructure.Messaging.Kafka\Infrastructure.Messaging.Kafka.csproj" />
-    <ProjectReference Include="..\MessageHandler.History\MessageHandler.History.csproj" />
+    <ProjectReference Include="..\MicroserviceConsumerA\MicroserviceConsumerA.csproj" />
     <ProjectReference Include="..\MicroserviceA\MicroserviceA.csproj" />
     <ProjectReference Include="..\MicroserviceB\MicroserviceB.csproj" />
-    <ProjectReference Include="..\SharedKernel\Infrastructure.Shared.Messaging.csproj" />
+    <ProjectReference Include="..\Infrastructure.Shared.Messaging\Infrastructure.Shared.Messaging.csproj" />
   </ItemGroup>
 
   <ItemGroup>

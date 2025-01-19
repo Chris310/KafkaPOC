@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharedKernel\Infrastructure.Shared.Messaging.csproj" />
+    <ProjectReference Include="..\Infrastructure.Shared.Messaging\Infrastructure.Shared.Messaging.csproj" />
   </ItemGroup>
 
 </Project>

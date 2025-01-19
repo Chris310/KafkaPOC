@@ -1,8 +1,6 @@
 ﻿using Confluent.Kafka;
-using Infrastructure.Messaging.Kafka.Serialization;
 using Microsoft.Extensions.Logging;
 using Infrastructure.Shared.Messaging;
-using System.Text.Json;
 
 namespace Infrastructure.Messaging.Kafka
 {

@@ -13,7 +13,6 @@ namespace KafkaPOC.Tests.Factories
         public void CreateProducer_ShouldReturnValidProducer()
         {
             // Arrange
-            var mockLoggerFactory = new Mock<ILogger<KafkaFactory>>();
             var mockLoggerProducer = new Mock<ILogger<IMessageProducer<string>>>();
             var options = Options.Create(new MessagingConfiguration
             {
@@ -30,7 +29,7 @@ namespace KafkaPOC.Tests.Factories
         }
             });
 
-            var factory = new KafkaFactory(options, mockLoggerFactory.Object);
+            var factory = new KafkaFactory(options);
 
             // Act
             var producer = factory.CreateProducer<string>("test-topic", mockLoggerProducer.Object);
@@ -43,7 +42,6 @@ namespace KafkaPOC.Tests.Factories
         public void CreateConsumer_ShouldReturnValidConsumer()
         {
             // Arrange
-            var mockLoggerFactory = new Mock<ILogger<KafkaFactory>>();
             var mockLoggerConsumer = new Mock<ILogger<IMessageConsumer<string>>>();
             var options = Options.Create(new MessagingConfiguration
             {
@@ -60,7 +58,7 @@ namespace KafkaPOC.Tests.Factories
         }
             });
 
-            var factory = new KafkaFactory(options, mockLoggerFactory.Object);
+            var factory = new KafkaFactory(options);
 
             // Act
             var consumer = factory.CreateConsumer<string>("test-topic", "test-group", mockLoggerConsumer.Object);

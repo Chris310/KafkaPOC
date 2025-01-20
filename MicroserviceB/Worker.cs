@@ -1,5 +1,6 @@
 using Infrastructure.Shared.Messaging.DTO;
 using Infrastructure.Shared.Messaging;
+
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
@@ -13,10 +14,8 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("***** EMPEZANDO A MANDAR MENSAJES *****");
-        Console.WriteLine("***** EMPEZANDO A MANDAR MENSAJES *****");
-
-        Random random = new Random();
+        _logger.LogInformation("***** EMPEZANDO A MANDAR MENSAJES HistoryMessageDTOv2 *****");
+        Console.WriteLine("***** EMPEZANDO A MANDAR MENSAJES HistoryMessageDTOv2 *****");
 
         while (!stoppingToken.IsCancellationRequested)
         {

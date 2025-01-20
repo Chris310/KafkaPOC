@@ -12,13 +12,11 @@ namespace Infrastructure.Messaging.Kafka
     public class KafkaFactory : IMessageBusFactory
     {
         private readonly MessagingConfiguration _config;
-        //private readonly ILogger<KafkaFactory> _logger;
         private readonly ISchemaRegistryClient _schemaRegistryClient;
 
-        public KafkaFactory(IOptions<MessagingConfiguration> config, ILogger<KafkaFactory> logger)
+        public KafkaFactory(IOptions<MessagingConfiguration> config)
         {
             _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
-            //_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             var schemaRegistryConfig = new SchemaRegistryConfig
             {

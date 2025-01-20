@@ -14,8 +14,8 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("***** EMPEZANDO A MANDAR MENSAJES *****");
-        Console.WriteLine("***** EMPEZANDO A MANDAR MENSAJES *****");
+        _logger.LogInformation("***** EMPEZANDO A MANDAR MENSAJES HistoryMessageDTO *****");
+        Console.WriteLine("***** EMPEZANDO A MANDAR MENSAJES HistoryMessageDTO *****");
 
         Random random = new Random();
 
@@ -27,12 +27,10 @@ public class Worker : BackgroundService
                 message.Fecha = DateTime.Now;
                 message.InfoPublica = "Test Data1";
                 message.InfoPrivada = "Test Data2";
-                //message.InfoSolicitud = random.Next(0, 5) == 0 ? null : "Test InfoSolicitud";
-                //message.InfoRespuesta = "Valor InfoRespuesta";
 
                 await _producer.PublishAsync(message);
 
-                _logger.LogInformation($"Mensaje enviado: {message.Fecha.ToString()}"); //, {message.InfoSolicitud ?? "N/A"}
+                _logger.LogInformation($"Mensaje enviado: {message.Fecha.ToString()}");
                 Console.WriteLine($"Mensaje enviado: {message.Fecha.ToString()}");
 
                 await Task.Delay(50, stoppingToken);

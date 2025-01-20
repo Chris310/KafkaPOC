@@ -11,10 +11,8 @@ IHost host = Host.CreateDefaultBuilder(args)
         // Configuración de Kafka desde appsettings.json
         services.Configure<MessagingConfiguration>(context.Configuration.GetSection("kafka"));
 
-        // Registrar el serializador de mensajes (JSON en este caso)
-        services.AddSingleton<IMessageSerializer, JsonMessageSerializer>();
+        //services.AddSingleton<IMessageSerializer, JsonMessageSerializer>();
 
-        // Registrar la fábrica de Kafka
         services.AddSingleton<IMessageBusFactory, KafkaFactory>();
 
         // Registrar un productor para el tópico "History"
